@@ -4,13 +4,19 @@ Interactive artifact for RecurseWright Article 1.
 
 ## Source provenance
 
-This artifact was imported from the publication candidate:
+The public Git history preserves two real publication-stage snapshots:
 
-- package: `rw-artifact-1-dev-v4.zip`
-- original executable: `embed-1.html`
+- `rw-artifact-1-dev-v4.zip` was imported as the first publication-grade snapshot.
+- `rw-artifact-1-dev-v5.zip` added a technical race-condition fix only; copy, design and flow were unchanged.
 
-The executable is stored here as `src/index.html`.
+The current executable is `src/index.html` and corresponds to v5.
 
-This snapshot preserves the sequential consequence flow introduced in v4: consequence rows arrive one causal beat at a time, with CONTINUE between beats.
+SHA-256:
 
-No interaction state is persisted between page loads or shared between embed instances.
+`0313c86866c07dbe4585abb2841f00a7292d4bb62f4a9e092c35d9acfd4ad668`
+
+## Runtime invariant
+
+Each embed instance starts from the initial state.
+
+Interaction state is not persisted across page loads and is not shared between embed instances. The only parent-window communication is the height-reporting `postMessage` contract used by an embed host.
