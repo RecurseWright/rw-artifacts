@@ -223,6 +223,7 @@
   .quiet:hover { border-color: rgba(51,69,162,.64); background: #fcfbf7; color: var(--ink); box-shadow: 0 4px 10px rgba(43,38,29,.07); transform: translateY(-1px); }
   .quiet:focus-visible { outline: 3px solid rgba(51,69,162,.18); outline-offset: 3px; border-color: var(--indigo); }
   .quiet:active { transform: translateY(0); background: #f5f1ea; }
+  .quiet[disabled] { cursor: default; opacity: .55; transform: none; box-shadow: none; }
 
   @keyframes surface-enter {
     from { opacity: 0; transform: translateY(6px); }
@@ -279,7 +280,8 @@
   const scene = document.getElementById('scene');
   let path = null;
   let timers = [];
-  let beatIndex = 0;
+  let beatIndex = -1;        // -1 until the first beat is actually visible
+  let transitioning = false; // guards navigation during beat transitions
   let currentBeats = null;
 
   const PATHS = {
@@ -340,6 +342,8 @@
     clearTimers();
     path = null;
     currentBeats = null;
+    beatIndex = -1;
+    transitioning = false;
     stage.innerHTML = initialMarkup();
     stage.querySelectorAll('[data-path]').forEach(btn => btn.addEventListener('click', choose));
     reportHeight();
@@ -376,7 +380,7 @@
         </section>
         <div class="beat-stage" id="beatStage"></div>
         <div class="beat-controls" id="beatControls">
-          <button class="quiet" type="button" id="continueBtn">CONTINUE</button>
+          <button class="quiet" type="button" id="continueBtn" disabled>CONTINUE</button>
           <button class="quiet" type="button" id="restartBtn" hidden>Start again</button>
         </div>
       </div>`;
@@ -401,12 +405,15 @@
     const continueBtn = document.getElementById('continueBtn');
     const restartBtn = document.getElementById('restartBtn');
     if (!beatStage) return;
-    beatIndex = index;
+    transitioning = true;
 
     const render = () => {
       beatStage.innerHTML = beatMarkup(currentBeats[index]);
       if (animate && !reduced()) beatStage.firstElementChild.classList.add('beat-in');
+      beatIndex = index;
+      transitioning = false;
       const last = index === currentBeats.length - 1;
+      continueBtn.disabled = false;
       continueBtn.hidden = last;
       restartBtn.hidden = !last;
       if (last && document.activeElement === document.body || last && continueBtn === document.activeElement) {
@@ -430,12 +437,15 @@
     clearTimers();
     const p = PATHS[which];
     currentBeats = p.changed;
+    beatIndex = -1;        // no beat visible yet; CONTINUE stays disabled until it is
+    transitioning = false;
     stage.innerHTML = resultMarkup(which);
 
     const beatStage = document.getElementById('beatStage');
     reserveHeight(beatStage, currentBeats.map(beatMarkup));
 
     document.getElementById('continueBtn').addEventListener('click', () => {
+      if (transitioning || beatIndex < 0) return;
       if (beatIndex < currentBeats.length - 1) showBeat(beatIndex + 1, true);
     });
     document.getElementById('restartBtn').addEventListener('click', reset);
