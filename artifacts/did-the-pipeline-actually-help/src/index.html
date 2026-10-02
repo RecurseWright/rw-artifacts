@@ -1,0 +1,486 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at https://mozilla.org/MPL/2.0/. -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>RecurseWright Artifact - Did the Pipeline Actually Help? (v1)</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page: #ece9e2;
+    --paper: #fffdf9;
+    --ink: #171713;
+    --text: #39362f;
+    --muted: #59544b;
+    --line: #d9d3c9;
+    --line-strong: #a9a197;
+    --gold: #b37b11;
+    --gold-dark: #7a5109;
+    --gold-bed: #f8f0e0;
+    --indigo: #3345a2;
+    --radius: 14px;
+    --serif: Georgia, "Times New Roman", serif;
+    --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--page); color: var(--ink); }
+  body { font-family: var(--sans); padding: 18px; }
+
+  .scene {
+    width: min(100%, 860px);
+    margin: 0 auto;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 0 14px 34px rgba(43, 38, 29, .07), 0 2px 5px rgba(43, 38, 29, .04);
+    overflow: clip;
+  }
+
+  .stage { padding: clamp(20px, 3.5vw, 28px) clamp(20px, 5vw, 44px) clamp(24px, 4vw, 34px); }
+
+  .eyebrow {
+    margin: 0 0 8px;
+    font: 600 12px/1.3 var(--mono);
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: #403b34;
+  }
+
+  h1 {
+    margin: 0 0 16px;
+    padding: 0 0 14px;
+    border-bottom: 1.5px solid rgba(179, 123, 17, .46);
+    font: 400 clamp(23px, 3.4vw, 28px)/1.2 var(--serif);
+  }
+
+  h2 { margin: 0 0 14px; font: 400 clamp(21px, 3vw, 24px)/1.3 var(--serif); color: var(--ink); }
+
+  h1:focus, h2:focus, [tabindex="-1"]:focus { outline: none; }
+  h2:focus-visible, [tabindex="-1"]:focus-visible { outline: 2px solid var(--indigo); outline-offset: 4px; border-radius: 3px; }
+
+  p { margin: 0 0 10px; font-size: 16px; line-height: 1.6; color: var(--text); }
+
+  .lines p { margin: 0 0 6px; color: var(--ink); }
+
+  /* ---- the slice: three questions stay closed, one opens ---------------- */
+  .slice { margin: 20px 0 0; padding: 0; list-style: none; }
+
+  .slice li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 9px 2px;
+    border-top: 1px solid var(--line);
+    font-size: 15.5px;
+  }
+
+  .slice li:last-child { border-bottom: 1px solid var(--line); }
+
+  .state {
+    flex: none;
+    font: 600 11.5px/1.4 var(--mono);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .state::before { content: "\25CF\00a0\00a0"; font-size: 9px; vertical-align: 1px; }
+
+  .slice .opens { background: var(--gold-bed); padding-inline: 10px; border-radius: 6px; }
+  .slice .opens .state { color: var(--gold-dark); }
+  .slice .opens .state::before { content: "\25CB\00a0\00a0"; }
+
+  .reveal { margin: 22px 0 0; }
+
+  .lead { font: 400 19px/1.45 var(--serif); color: var(--ink); margin-bottom: 8px; }
+
+  /* ---- a case ------------------------------------------------------------- */
+  .case p { margin-bottom: 4px; }
+
+  .known {
+    margin: 0 0 14px;
+    padding: 0;
+    list-style: none;
+    font: 14.5px/1.7 var(--mono);
+    color: var(--ink);
+  }
+
+  .known--new { color: var(--gold-dark); }
+
+  .choice { margin: 18px 0 0; }
+
+  .chosen {
+    margin: 0 0 6px;
+    font: 600 11.5px/1.4 var(--mono);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ---- the boundary ------------------------------------------------------- */
+  .groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px 24px; margin: 4px 0 0; }
+
+  .group h3 {
+    margin: 0 0 8px;
+    padding: 0 0 6px;
+    border-bottom: 1px solid var(--line);
+    font: 600 12px/1.3 var(--mono);
+    letter-spacing: .14em;
+    color: #403b34;
+  }
+
+  .group--reopen h3 { color: var(--gold-dark); border-bottom-color: var(--gold); }
+
+  .group ul { margin: 0; padding: 0; list-style: none; font-size: 15px; line-height: 1.55; color: var(--ink); }
+  .group li { margin: 0 0 4px; }
+
+  .payoff { margin: 24px 0 0; font: 400 18px/1.55 var(--serif); color: var(--ink); }
+
+  /* A reading of the current case, not the verdict: quieter than both the
+     boundary above it and the ending that closes the walk. */
+  .readout { margin: 22px 0 0; font-size: 15px; line-height: 1.6; color: var(--muted); }
+
+  .ending p { margin: 0 0 4px; }
+  .ending .ending__answer { margin: 12px 0 0; }
+
+  .check { margin: 0 0 16px; }
+  /* The item the challenge moved says so itself — what happened to it and
+     where that put it — in the slice's status grammar, so the final frame
+     explains itself without the motion, position or colour. */
+  .moved__tag {
+    margin-left: 6px;
+    font: 600 11px/1.4 var(--mono);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+    white-space: nowrap;
+  }
+
+  .check__note { margin: 0 0 2px; font-size: 14px; color: var(--muted); }
+  .check__line { margin: 0; color: var(--ink); }
+
+  /* The moved item fades out of KEEP CLOSED as it arrives in REOPEN. It is
+     hidden from assistive technology, so both lists read as they now are. */
+  .leaving { animation: leaving 320ms ease forwards; overflow: hidden; }
+
+  @keyframes leaving {
+    from { opacity: 1; max-height: 2em; }
+    to { opacity: 0; max-height: 0; margin: 0; visibility: hidden; }
+  }
+
+  /* ---- actions: Group Booking's button family ----------------------------
+     `.primary` is its decision button (`.action`), `.secondary` its quiet one
+     (`.quiet`): paper surface, quiet border, indigo edge and a 1px lift on
+     hover, the same focus ring. */
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0 0; }
+
+  button.primary, button.secondary {
+    appearance: none;
+    min-height: 44px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    background: #fffefa;
+    font: 600 13px/1.2 var(--sans);
+    cursor: pointer;
+    transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease, color 180ms ease;
+  }
+
+  button.primary { border: 1px solid #afa799; color: #23211d; letter-spacing: .035em; box-shadow: 0 1px 0 rgba(43, 38, 29, .04); }
+  button.primary:hover { border-color: rgba(51, 69, 162, .72); background: #fcfbf7; box-shadow: 0 4px 12px rgba(43, 38, 29, .08); transform: translateY(-1px); }
+  button.secondary { border: 1px solid #b8b0a3; color: #3b3731; letter-spacing: .05em; }
+  button.secondary:hover { border-color: rgba(51,69,162,.64); background: #fcfbf7; color: var(--ink); box-shadow: 0 4px 10px rgba(43,38,29,.07); transform: translateY(-1px); }
+  button.primary:active, button.secondary:active { transform: translateY(0); background: #f5f1ea; box-shadow: inset 0 1px 2px rgba(43, 38, 29, .09); }
+
+  button.primary:focus-visible, button.secondary:focus-visible {
+    outline: 3px solid rgba(51, 69, 162, .18);
+    outline-offset: 3px;
+    border-color: var(--indigo);
+  }
+
+  /* ---- motion belongs to the change: the slice resolving, nothing else ---- */
+  .appear { animation: appear 420ms ease both; animation-delay: var(--d, 0ms); }
+
+  @keyframes appear {
+    from { opacity: 0; transform: translateY(4px); visibility: hidden; }
+    to { opacity: 1; transform: none; visibility: visible; }
+  }
+
+  @media (max-width: 620px) {
+    body { padding: 10px; }
+    .groups { grid-template-columns: minmax(0, 1fr); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .appear { animation: none; }
+    .leaving { display: none; }
+    button.primary, button.secondary { transition: none; }
+    button.primary:hover, button.secondary:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+<main class="scene" id="scene">
+  <div class="stage">
+    <p class="eyebrow">RecurseWright Artifact</p>
+    <h1>Did the Pipeline Actually Help?</h1>
+    <div id="app">
+      <noscript><p>This artifact needs JavaScript to run.</p></noscript>
+    </div>
+  </div>
+</main>
+
+<script>
+(() => {
+  'use strict';
+
+  // Every string below is fixed. Nothing the reader does is stored, sent or
+  // read back; the only state is which moment is on screen, which of the three
+  // cases have been seen through to their boundary, and whether each was
+  // reopened broadly or narrowly — so the ending can describe the walk the
+  // reader actually took. None of it outlives the page.
+  const app = document.getElementById('app');
+  const scene = document.getElementById('scene');
+
+  // Small curated cases, always in this order. Each has things already
+  // settled, one changed condition, and what must still hold afterwards.
+  const CASES = [
+    {
+      path: 'A reusable test path already covers:',
+      known: ['request shape', 'URL state', 'result provenance'],
+      introduces: 'late async responses',
+      reopen: 'async ordering',
+      perturb: 'URL state',
+      was: 'URL state was in KEEP CLOSED.',
+      now: 'Now suppose it changed too.',
+      so: 'So URL state reopens.',
+      hold: ['only current data reaches the UI', 'the same evidence standard still passes'],
+    },
+    {
+      path: 'A reusable deployment path already covers:',
+      known: ['build provenance', 'release checks', 'rollback'],
+      introduces: 'a new runtime version',
+      reopen: 'runtime behavior',
+      perturb: 'rollback',
+      was: 'Rollback was in KEEP CLOSED.',
+      now: 'Now suppose its behavior changed.',
+      so: 'So rollback reopens.',
+      hold: ['the release still rolls back cleanly', 'the same evidence standard still passes'],
+    },
+    {
+      path: 'A reusable list pattern already covers:',
+      known: ['filter state in the URL', 'paging', 'result counts'],
+      introduces: 'rows with their own inline actions',
+      reopen: 'keyboard access to row actions',
+      perturb: 'result counts',
+      was: 'Result counts were in KEEP CLOSED.',
+      now: 'Now suppose they changed too.',
+      so: 'So result counts reopen.',
+      hold: ['every action is reachable by keyboard', 'the same evidence standard still passes'],
+    },
+  ];
+
+  let current = 0;
+  const explored = new Set();
+  const choices = new Map(); // case index -> 'broad' | 'narrow'
+
+  const list = (items, cls) => `<ul class="${cls}">${items.map((t) => `<li>${t}</li>`).join('')}</ul>`;
+  const delay = (ms) => `style="--d: ${ms}ms"`;
+
+  function show(html, focusSelector) {
+    app.innerHTML = html;
+    const focus = focusSelector && app.querySelector(focusSelector);
+    if (focus) focus.focus();
+    reportHeight();
+  }
+
+  const on = (selector, handler) => {
+    const el = app.querySelector(selector);
+    if (el) el.addEventListener('click', handler);
+  };
+
+  // ---- 1. the observation ---------------------------------------------------
+  const opening = `
+    <div class="lines">
+      <p>A reusable path already existed.</p>
+      <p>On the next slice, several old questions stayed settled.</p>
+      <p>One genuinely new async race appeared.</p>
+    </div>`;
+
+  function observe() {
+    show(`${opening}
+      <div class="actions"><button type="button" class="primary" data-run>Run the slice</button></div>`);
+    on('[data-run]', ran);
+  }
+
+  function ran() {
+    show(`${opening}
+      <div role="group" aria-label="The next slice" tabindex="-1" data-slice>
+        <ul class="slice">
+          <li class="appear" ${delay(0)}><span>URL contract</span><span class="state">stays closed</span></li>
+          <li class="appear" ${delay(260)}><span>Result provenance</span><span class="state">stays closed</span></li>
+          <li class="appear" ${delay(520)}><span>Presentation contract</span><span class="state">stays closed</span></li>
+          <li class="appear opens" ${delay(1040)}><span>Async ordering</span><span class="state">new &middot; opens</span></li>
+        </ul>
+      </div>
+      <div class="reveal appear" ${delay(1700)}>
+        <p class="lead">The useful part wasn't that the slice was faster.</p>
+        <p>Old uncertainty stayed settled.<br>New uncertainty could still appear.</p>
+        <div class="actions"><button type="button" class="primary" data-try>Try one</button></div>
+      </div>`, '[data-slice]');
+    on('[data-try]', () => choose(current));
+  }
+
+  // ---- 2. one choice --------------------------------------------------------
+  const caseHtml = (c) => `
+    <div class="case">
+      <p>${c.path}</p>
+      ${list(c.known, 'known')}
+      <p>This slice introduces:</p>
+      ${list([c.introduces], 'known known--new')}
+    </div>
+    <h2 tabindex="-1">What deserves to reopen?</h2>`;
+
+  function choose(index) {
+    current = index;
+    const c = CASES[index];
+    const narrow = `Only ${c.reopen}`;
+    show(`${caseHtml(c)}
+      <div class="actions">
+        <button type="button" class="primary" data-pick="all">Reopen everything</button>
+        <button type="button" class="primary" data-pick="narrow">${narrow}</button>
+      </div>`, 'h2');
+    on('[data-pick="all"]', () => {
+      choices.set(index, 'broad');
+      consequence('Reopen everything',
+        ['Still safe.', 'But the pipeline helped less here.<br>Questions whose evidence had not moved were opened again.']);
+    });
+    on('[data-pick="narrow"]', () => {
+      choices.set(index, 'narrow');
+      consequence(narrow,
+        ['Narrower.', 'Settled evidence stays settled.<br>The changed condition reopens.']);
+    });
+  }
+
+  function consequence(picked, [lead, rest]) {
+    show(`${caseHtml(CASES[current])}
+      <div class="choice" tabindex="-1" data-consequence>
+        <p class="chosen">You chose: ${picked}</p>
+        <p class="lead">${lead}</p>
+        <p>${rest}</p>
+      </div>
+      <div class="actions"><button type="button" class="primary" data-boundary>Show the boundary</button></div>`, '[data-consequence]');
+    on('[data-boundary]', () => boundary());
+  }
+
+  // ---- 3. the boundary ------------------------------------------------------
+  // The challenge changes the boundary itself: one more condition changes, and
+  // the item it touches leaves KEEP CLOSED for REOPEN. Restoring redraws the
+  // case exactly as it was. Neither touches which cases count as explored.
+  function boundary(challenged = false) {
+    const c = CASES[current];
+    explored.add(current);
+    const closed = challenged
+      ? c.known.map((t) => (t === c.perturb ? `<li class="leaving" aria-hidden="true">${t}</li>` : `<li>${t}</li>`)).join('')
+      : c.known.map((t) => `<li>${t}</li>`).join('');
+    const reopen = challenged
+      ? `<li>${c.reopen}</li><li class="appear moved" ${delay(320)}>${c.perturb} <span class="moved__tag">changed &rarr; reopen</span></li>`
+      : `<li>${c.reopen}</li>`;
+    // Once every case has been seen, the walk ends rather than circling back.
+    const next = explored.size < CASES.length
+      ? '<button type="button" class="secondary" data-another>Try another case</button>'
+      : '<button type="button" class="secondary" data-finish>Finish</button>';
+    const check = challenged ? `
+      <div class="check" tabindex="-1" data-check>
+        <p class="check__note">One more thing changed.</p>
+        <p class="check__line">${c.was}<br>${c.now}</p>
+      </div>` : '';
+    const readout = choices.get(current) === 'broad'
+      ? 'More settled work was reopened.<br>The evidence bar still held.<br>New uncertainty was still allowed in.'
+      : 'Less repeated investigation.<br>Same evidence bar.<br>New uncertainty still allowed in.';
+    const after = challenged
+      ? `<p class="payoff">${c.so}</p>`
+      : `<p class="readout">${readout}</p>`;
+    const actions = challenged
+      ? '<button type="button" class="secondary" data-restore>Restore original boundary</button>'
+      : `${next}<button type="button" class="secondary" data-challenge>What if something else changed?</button>`;
+    show(`
+      <h2 tabindex="-1">The boundary</h2>${check}
+      <div class="groups">
+        <section class="group" aria-labelledby="g-closed"><h3 id="g-closed">KEEP CLOSED</h3><ul>${closed}</ul></section>
+        <section class="group group--reopen" aria-labelledby="g-reopen"><h3 id="g-reopen">REOPEN</h3><ul>${reopen}</ul></section>
+        <section class="group" aria-labelledby="g-hold"><h3 id="g-hold">MUST STILL HOLD</h3>${list(c.hold, '')}</section>
+      </div>
+      ${after}
+      <div class="actions">${actions}</div>`, challenged ? '[data-check]' : 'h2');
+    on('[data-another]', () => choose((current + 1) % CASES.length));
+    on('[data-finish]', finish);
+    on('[data-challenge]', () => boundary(true));
+    on('[data-restore]', () => boundary(false));
+  }
+
+  // ---- the end, and the way back to the beginning -------------------------
+  // Three walks, three endings: all narrow, all broad, or a mixture, read
+  // from the choice the reader made on each case. Nothing is counted.
+  const ENDINGS = {
+    narrow: ['Settled work stayed settled.', 'New uncertainty still got in.', 'That was the part we stopped paying for twice.'],
+    broad: ['The evidence bar still held.', 'New uncertainty still got in.', 'But we reopened more than these slices required.'],
+    mixed: ['Some settled work stayed settled.', 'Some was opened again.', 'The pipeline helped where prior evidence was allowed to hold.'],
+  };
+
+  function finish() {
+    const walk = CASES.map((_, i) => choices.get(i));
+    const family = walk.every((k) => k === 'narrow') ? 'narrow' : walk.every((k) => k === 'broad') ? 'broad' : 'mixed';
+    const [first, second, answer] = ENDINGS[family];
+    show(`
+      <div class="ending" tabindex="-1" data-ending data-walk="${family}">
+        <p>${first}</p>
+        <p>${second}</p>
+        <p class="lead ending__answer">${answer}</p>
+      </div>
+      <div class="actions"><button type="button" class="primary" data-restart>Start over</button></div>`, '[data-ending]');
+    on('[data-restart]', () => {
+      explored.clear();
+      choices.clear();
+      current = 0;
+      observe();
+      const run = app.querySelector('[data-run]');
+      if (run) run.focus();
+    });
+  }
+
+  // ---- the host contract: height only -------------------------------------
+  // The one message this artifact sends: a number. Measured on a timer, not on
+  // an animation frame, because a browser may stop animation frames in a
+  // cross-origin frame that is still off screen, and the host should know the
+  // height before the reader scrolls to it.
+  let reportTimer = null;
+
+  function reportHeight() {
+    clearTimeout(reportTimer);
+    reportTimer = setTimeout(() => {
+      const styles = getComputedStyle(document.body);
+      const verticalPadding = (parseFloat(styles.paddingTop) || 0) + (parseFloat(styles.paddingBottom) || 0);
+      const height = Math.ceil(scene.getBoundingClientRect().height + verticalPadding);
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'rwa:height', height }, '*');
+      }
+    }, 0);
+  }
+
+  new ResizeObserver(reportHeight).observe(scene);
+  window.addEventListener('resize', reportHeight);
+  window.addEventListener('load', reportHeight);
+  // A host may start listening after the first report, and a scene whose size
+  // does not change would never report again. A few late repeats close that gap.
+  [250, 1000, 3000].forEach((ms) => setTimeout(reportHeight, ms));
+  observe();
+})();
+</script>
+</body>
+</html>
