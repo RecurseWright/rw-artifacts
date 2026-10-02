@@ -1,6 +1,14 @@
 # Group Booking
 
-Interactive artifact for RecurseWright Article 1.
+Interactive artifact created for:
+
+[**Experimental RecurseWright: Engineering on Moving Ground, and Other Pretty Problems with Stability**](https://rw.krupnyak.com/articles/experimental-recursewright-engineering-on-moving-ground/)
+
+It is a small causal scene in which one unresolved engineering decision is made before later evidence changes what that decision means.
+
+- [Open the published artifact →](https://rw.krupnyak.com/artifacts/group-booking/)
+- [Read the article →](https://rw.krupnyak.com/articles/experimental-recursewright-engineering-on-moving-ground/)
+- [Published snapshot: `group-booking-v1`](https://github.com/RecurseWright/rw-artifacts/tree/group-booking-v1)
 
 ## Source provenance
 
