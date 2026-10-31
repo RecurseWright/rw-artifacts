@@ -1,0 +1,746 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at https://mozilla.org/MPL/2.0/. -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Small Code Review</title>
+<style id="tw">*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.19 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}body{background-color:#1b2634;background-image:linear-gradient(112deg,rgba(30,41,59,.5) 0 54%,rgba(42,58,84,.5) 54% 100%);background-attachment:fixed}body:before{content:"";position:fixed;width:560px;height:560px;right:-160px;top:-180px;border-radius:50%;pointer-events:none;z-index:0;background:radial-gradient(circle,rgba(184,115,51,.2) 0,transparent 65%);animation:drift 14s ease-in-out infinite alternate}@keyframes drift{to{transform:translate(-50px,40px) scale(1.12)}}body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(900px 320px at 30% 112%,rgba(42,58,84,.3),transparent 70%),radial-gradient(700px 280px at 78% 118%,rgba(36,50,71,.32),transparent 70%);animation:waterShift 26s ease-in-out infinite alternate}@keyframes waterShift{to{transform:translate(12px,-14px) scale(1.04)}}#app{position:relative;z-index:1}.fseq{opacity:0;animation:fadein 1.2s ease forwards}@keyframes fadein{to{opacity:1}}#water{position:fixed;inset:0;z-index:0;overflow:hidden}#water,.wrot{pointer-events:none}.wrot{position:absolute;width:0;height:0}.wripple{position:absolute;left:-45px;top:-45px;width:90px;height:90px;border:2px solid transparent;border-top-color:rgba(126,150,184,.45);border-radius:50%;animation:wrip 1.8s ease-out forwards}.wripple:after{content:"";position:absolute;inset:9px;border:2px solid transparent;border-top-color:rgba(126,150,184,.28);border-radius:50%}@keyframes wrip{0%{transform:scale(.3);opacity:.6}to{transform:scale(1.55);opacity:0}}.ghost-fx{position:relative}.ghost-fx:before{content:"";position:absolute;inset:-3px;border-radius:12px;border:1.25px solid rgba(216,147,79,.5);opacity:0;pointer-events:none}.ghost-fx:hover:before{animation:ringSoft 1.8s ease-out infinite}@keyframes ringSoft{0%{transform:scale(.985);opacity:.45}75%{transform:scale(1.08);opacity:0}to{opacity:0}}.page-in{animation:pagein .5s ease both}@keyframes pagein{0%{opacity:0;transform:translateY(10px)}}.sunken{background:linear-gradient(180deg,#0e1522,#101826 45%,#131c2c);border-radius:.5rem;border:1px solid rgba(6,10,18,.8);border-bottom-color:rgba(232,235,240,.07);box-shadow:inset 0 4px 8px -2px rgba(0,0,0,.6),inset 3px 0 6px -3px rgba(0,0,0,.35),inset -3px 0 6px -3px rgba(0,0,0,.35),0 1px 0 rgba(232,235,240,.05)}.tip{position:relative}.tip:after{content:attr(data-tip);position:absolute;right:0;bottom:calc(100% + 8px);background:#1e293b;border:1px solid hsla(0,0%,100%,.12);color:#c9d4e3;font-family:ui-sans-serif,system-ui,sans-serif;font-size:11px;padding:4px 9px;border-radius:6px;white-space:nowrap;opacity:0;transform:translateY(2px);transition:opacity .2s,transform .2s;pointer-events:none}.tip:hover:after{opacity:1;transform:translateY(0)}.caret{display:inline-block;width:8px;height:1em;background:#d8934f;animation:blink 1.1s steps(1) infinite}@keyframes blink{50%{opacity:0}}.pchev{opacity:0;transition:opacity .2s}.opt.sel .pchev,.opt:hover .pchev{opacity:1;animation:blink 1.1s steps(1) infinite}.nav-ch{opacity:.65;transition:opacity .25s,transform .25s}.nav-ch:hover:not(:disabled){opacity:1}.nav-ch.l:hover:not(:disabled){transform:translateX(-2px)}.nav-ch.r:hover:not(:disabled){transform:translateX(2px)}.nav-ch:disabled{opacity:.12;cursor:default}button:focus-visible{outline:2px solid #c98443;outline-offset:2px}@media (prefers-reduced-motion:reduce){.caret,.pchev,body:after,body:before{animation:none!important}.wripple,.wrot{display:none}.fseq,.ghost-fx:before,.page-in{animation:none!important}.fseq{opacity:1}*{transition:none!important;animation:none!important}}.absolute{position:absolute}.relative{position:relative}.left-0{left:0}.left-3{left:.75rem}.right-0{right:0}.top-1\/2{top:50%}.-m-1{margin:-.25rem}.mx-1{margin-left:.25rem;margin-right:.25rem}.mx-auto{margin-left:auto;margin-right:auto}.my-5{margin-top:1.25rem;margin-bottom:1.25rem}.my-6{margin-top:1.5rem;margin-bottom:1.5rem}.-ml-2{margin-left:-.5rem}.mb-1{margin-bottom:.25rem}.mb-1\.5{margin-bottom:.375rem}.mb-10{margin-bottom:2.5rem}.mb-12{margin-bottom:3rem}.mb-2{margin-bottom:.5rem}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.mb-8{margin-bottom:2rem}.mt-1\.5{margin-top:.375rem}.mt-10{margin-top:2.5rem}.mt-16{margin-top:4rem}.mt-4{margin-top:1rem}.mt-6{margin-top:1.5rem}.mt-7{margin-top:1.75rem}.mt-8{margin-top:2rem}.block{display:block}.inline{display:inline}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.h-1\.5{height:.375rem}.h-2\.5{height:.625rem}.h-8{height:2rem}.h-px{height:1px}.min-h-screen{min-height:100vh}.w-1\.5{width:.375rem}.w-10{width:2.5rem}.w-2\.5{width:.625rem}.w-full{width:100%}.max-w-md{max-width:28rem}.max-w-xl{max-width:36rem}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.-translate-x-1\/2{--tw-translate-x:-50%}.-translate-x-1\/2,.-translate-y-1\/2{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.-translate-y-1\/2{--tw-translate-y:-50%}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.cursor-not-allowed{cursor:not-allowed}.flex-col{flex-direction:column}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1\.5{gap:.375rem}.gap-2{gap:.5rem}.gap-2\.5{gap:.625rem}.gap-3{gap:.75rem}.overflow-x-auto{overflow-x:auto}.whitespace-nowrap{white-space:nowrap}.whitespace-pre{white-space:pre}.rounded{border-radius:.25rem}.rounded-\[10px\]{border-radius:10px}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:.5rem}.rounded-xl{border-radius:.75rem}.rounded-r-lg{border-top-right-radius:.5rem;border-bottom-right-radius:.5rem}.border{border-width:1px}.border-l-2{border-left-width:2px}.border-copper-400{--tw-border-opacity:1;border-color:rgb(201 132 67/var(--tw-border-opacity,1))}.border-emerald-500\/30{border-color:rgba(16,185,129,.3)}.border-white\/10{border-color:hsla(0,0%,100%,.1)}.border-white\/15{border-color:hsla(0,0%,100%,.15)}.bg-copper-300{--tw-bg-opacity:1;background-color:rgb(216 147 79/var(--tw-bg-opacity,1))}.bg-copper-400{--tw-bg-opacity:1;background-color:rgb(201 132 67/var(--tw-bg-opacity,1))}.bg-copper-500{--tw-bg-opacity:1;background-color:rgb(184 115 51/var(--tw-bg-opacity,1))}.bg-copper-500\/10{background-color:rgba(184,115,51,.1)}.bg-emerald-400{--tw-bg-opacity:1;background-color:rgb(52 211 153/var(--tw-bg-opacity,1))}.bg-emerald-500\/10{background-color:rgba(16,185,129,.1)}.bg-navy-750{--tw-bg-opacity:1;background-color:rgb(42 58 84/var(--tw-bg-opacity,1))}.bg-navy-800{--tw-bg-opacity:1;background-color:rgb(30 41 59/var(--tw-bg-opacity,1))}.bg-navy-850{--tw-bg-opacity:1;background-color:rgb(27 38 52/var(--tw-bg-opacity,1))}.bg-rose-500\/10{background-color:rgba(244,63,94,.1)}.bg-gradient-to-r{background-image:linear-gradient(to right,var(--tw-gradient-stops))}.from-copper-500\/80{--tw-gradient-from:rgba(184,115,51,.8) var(--tw-gradient-from-position);--tw-gradient-to:rgba(184,115,51,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.to-copper-300\/80{--tw-gradient-to:rgba(216,147,79,.8) var(--tw-gradient-to-position)}.p-1{padding:.25rem}.p-3{padding:.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.px-2{padding-left:.5rem;padding-right:.5rem}.px-2\.5{padding-left:.625rem;padding-right:.625rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-8{padding-left:2rem;padding-right:2rem}.px-\[22px\]{padding-left:22px;padding-right:22px}.py-0\.5{padding-top:.125rem;padding-bottom:.125rem}.py-1\.5{padding-top:.375rem;padding-bottom:.375rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-2\.5{padding-top:.625rem;padding-bottom:.625rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.py-8{padding-top:2rem;padding-bottom:2rem}.pb-1{padding-bottom:.25rem}.pb-8{padding-bottom:2rem}.pl-4{padding-left:1rem}.pl-9{padding-left:2.25rem}.pr-3{padding-right:.75rem}.pr-4{padding-right:1rem}.pt-0\.5{padding-top:.125rem}.pt-2{padding-top:.5rem}.pt-20{padding-top:5rem}.text-left{text-align:left}.text-center{text-align:center}.text-right{text-align:right}.align-text-bottom{vertical-align:text-bottom}.font-mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.font-serif{font-family:Iowan Old Style,Palatino Linotype,Palatino,Georgia,Times New Roman,serif}.text-3xl{font-size:1.875rem;line-height:2.25rem}.text-5xl{font-size:3rem;line-height:1}.text-\[12px\]{font-size:12px}.text-\[13px\]{font-size:13px}.text-\[14px\]{font-size:14px}.text-\[15px\]{font-size:15px}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xs{font-size:.75rem;line-height:1rem}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.italic{font-style:italic}.leading-\[1\.13\]{line-height:1.13}.leading-relaxed{line-height:1.625}.leading-snug{line-height:1.375}.tracking-\[-0\.015em\]{letter-spacing:-.015em}.tracking-\[0\.04em\]{letter-spacing:.04em}.tracking-widest{letter-spacing:.1em}.text-copper-300{--tw-text-opacity:1;color:rgb(216 147 79/var(--tw-text-opacity,1))}.text-emerald-300{--tw-text-opacity:1;color:rgb(110 231 183/var(--tw-text-opacity,1))}.text-ink{--tw-text-opacity:1;color:rgb(232 235 240/var(--tw-text-opacity,1))}.text-ink\/90{color:rgba(232,235,240,.9)}.text-inkdim{--tw-text-opacity:1;color:rgb(154 167 184/var(--tw-text-opacity,1))}.text-rose-300{--tw-text-opacity:1;color:rgb(253 164 175/var(--tw-text-opacity,1))}.text-slate-200{--tw-text-opacity:1;color:rgb(226 232 240/var(--tw-text-opacity,1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225/var(--tw-text-opacity,1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184/var(--tw-text-opacity,1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139/var(--tw-text-opacity,1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105/var(--tw-text-opacity,1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.underline{text-decoration-line:underline}.decoration-copper-500{text-decoration-color:#b87333}.decoration-copper-500\/70{text-decoration-color:rgba(184,115,51,.7)}.decoration-dotted{text-decoration-style:dotted}.decoration-2{text-decoration-thickness:2px}.underline-offset-4{text-underline-offset:4px}.underline-offset-\[7px\]{text-underline-offset:7px}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.shadow{--tw-shadow:0 1px 3px 0 rgba(0,0,0,.1),0 1px 2px -1px rgba(0,0,0,.1);--tw-shadow-colored:0 1px 3px 0 var(--tw-shadow-color),0 1px 2px -1px var(--tw-shadow-color)}.shadow,.shadow-\[0_0_10px_rgba\(216\2c 147\2c 79\2c 0\.7\)\]{box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-\[0_0_10px_rgba\(216\2c 147\2c 79\2c 0\.7\)\]{--tw-shadow:0 0 10px rgba(216,147,79,.7);--tw-shadow-colored:0 0 10px var(--tw-shadow-color)}.filter{filter:var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.transition-colors{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.hover\:-translate-y-0\.5:hover{--tw-translate-y:-0.125rem;transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.hover\:border-copper-400\/60:hover{border-color:rgba(201,132,67,.6)}.hover\:bg-copper-300:hover{--tw-bg-opacity:1;background-color:rgb(216 147 79/var(--tw-bg-opacity,1))}.hover\:text-copper-300:hover{--tw-text-opacity:1;color:rgb(216 147 79/var(--tw-text-opacity,1))}.hover\:shadow-\[0_8px_24px_-8px_\#B87333\]:hover{--tw-shadow:0 8px 24px -8px #b87333;--tw-shadow-colored:0 8px 24px -8px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}@media (min-width:640px){.sm\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.sm\:flex-row{flex-direction:row}}</style>
+</head>
+<body class="bg-navy-850 text-slate-200 antialiased min-h-screen">
+<div id="water" aria-hidden="true"></div>
+<div id="app" class="max-w-xl mx-auto px-4 py-8"></div>
+
+<script>
+'use strict';
+
+/* ============================================================
+   SCENARIO - all content lives here as data.
+   Light walk -> quiet turn -> flip -> warm reveal -> encore.
+   The second act is never announced up front.
+   ============================================================ */
+const SCENARIO = {
+
+  /* Filled at publication day: article URL slot. null = block hidden. */
+  meta: {
+    articleUrl: 'https://rw.krupnyak.com/articles/experimental-recursewright-the-cube-that-doesnt-wait-for-a-command/',
+    articleLinkText: 'This demo walks beside an article - read the whole story'
+  },
+
+  intro: {
+    title: 'A Small Code Review',
+    sub: 'Five tiny diffs from an <span class="italic text-copper-300 underline decoration-dotted decoration-copper-500 decoration-2 underline-offset-[7px]">ordinary</span> week.',
+    notes: ['No signup. No AI. Your answers stay on this page.'],
+    cta: 'Open the first diff'
+  },
+
+  tour: {
+    lead: 'A tiny library app. This is the whole system:',
+    files: [
+      { name: 'catalog.js', code:
+`export const books = [
+  { id: 1, title: "Dune",    copiesTotal: 2, copiesOnLoan: 1 },
+  { id: 2, title: "Solaris", copiesTotal: 1, copiesOnLoan: 1 },
+];` },
+      { name: 'search.js', code:
+`// list screen: title + availability badge
+export function searchResults(query) {
+  return books
+    .filter(b => b.title.toLowerCase().includes(query))
+    .map(b => ({
+      title: b.title,
+      available: b.copiesTotal - b.copiesOnLoan > 0
+    }));
+}` },
+      { name: 'details.js', code:
+`// book page, same inline check
+const available = book.copiesTotal - book.copiesOnLoan > 0;` },
+      { name: 'loans.js', code:
+`export function checkout(memberId, bookId) {
+  findBook(bookId).copiesOnLoan += 1;
+  return { ok: true };
+}` }
+    ],
+    outro: 'Five small changes are coming in. Review each one - it goes fast.',
+    cta: 'First diff'
+  },
+
+  deltas: [
+    {
+      id: 1,
+      ticket: 'Availability badge logic is duplicated in search and details. Extract a shared helper so the two screens can never disagree.',
+      diff: [
+        { f: 'catalog.js' },
+        { a: 'export function isAvailable(book) {' },
+        { a: '  return book.copiesOnLoan < book.copiesTotal;' },
+        { a: '}' },
+        { f: 'search.js' },
+        { d: '  available: b.copiesTotal - b.copiesOnLoan > 0' },
+        { a: '  available: isAvailable(b)' },
+        { f: 'details.js' },
+        { d: 'const available = book.copiesTotal - book.copiesOnLoan > 0;' },
+        { a: 'const available = isAvailable(book);' }
+      ],
+      q: 'Can search and details disagree about availability now?',
+      options: ['Yes, still possible', 'No - one helper now'],
+      correct: 1,
+      yes: 'Right. One source, no drift.',
+      no: 'Actually no - both screens read the same helper now.'
+    },
+    {
+      id: 2,
+      ticket: 'Checkout must refuse when no copies are free.',
+      diff: [
+        { f: 'loans.js' },
+        { c: 'export function checkout(memberId, bookId) {' },
+        { a: '  const book = findBook(bookId);' },
+        { a: '  if (!isAvailable(book)) {' },
+        { a: '    return { ok: false, reason: "no copies available" };' },
+        { a: '  }' },
+        { c: '  book.copiesOnLoan += 1;' },
+        { c: '  return { ok: true };' },
+        { c: '}' }
+      ],
+      q: 'Three copies, all three on loan. Checkout refuses?',
+      options: ['Yes', 'No'],
+      correct: 0,
+      yes: 'Yep. Same helper, same answer.',
+      no: 'It does - the shared helper says no copies.'
+    },
+    {
+      id: 3,
+      ticket: 'Members can reserve a book. Reserved books must not show as available in search results. (Full reservation flow, including checkout rules, is tracked separately.)',
+      diff: [
+        { f: 'reservations.js (new)' },
+        { a: 'export function reserve(memberId, bookId) {' },
+        { a: '  findBook(bookId).reservedBy = memberId;' },
+        { a: '}' },
+        { f: 'search.js' },
+        { c: '  title: b.title,' },
+        { d: '  available: isAvailable(b)' },
+        { a: '  available: isAvailable(b) && !b.reservedBy' }
+      ],
+      q: 'A reserved book with a free copy - search badge?',
+      options: ['Available', 'Unavailable'],
+      correct: 1,
+      yes: 'Exactly what the ticket asked.',
+      no: 'The new filter hides it - just like the ticket asked.'
+    },
+    {
+      id: 4,
+      ticket: 'Walk-in kiosk: a new screen listing all available books (titles only) for visitors without accounts.',
+      diff: [
+        { f: 'kiosk.js (new)' },
+        { a: 'export function kioskList() {' },
+        { a: '  return books.filter(isAvailable).map(b => b.title);' },
+        { a: '}' }
+      ],
+      q: 'All copies out on loan - does the kiosk list the book?',
+      options: ['Yes', 'No'],
+      correct: 1,
+      yes: 'Right. Trusted helper, again.',
+      no: 'It hides it - the same trusted helper filters it out.'
+    },
+    {
+      id: 5,
+      ticket: 'Search feels slow on large catalogs. Cache results per query.',
+      diff: [
+        { f: 'search.js' },
+        { a: 'const cache = new Map();' },
+        { c: 'export function searchResults(query) {' },
+        { a: '  if (cache.has(query)) return cache.get(query);' },
+        { c: '  const results = /* filter + map as before */;' },
+        { a: '  cache.set(query, results);' },
+        { c: '  return results;' },
+        { c: '}' },
+        { f: 'catalog.js' },
+        { c: '// mutations clear the cache:' },
+        { a: 'checkout()   -> clearSearchCache();' },
+        { a: 'returnBook() -> clearSearchCache();' },
+        { a: 'addBook()    -> clearSearchCache();' }
+      ],
+      q: 'Same query twice, nothing changed in between - same results?',
+      options: ['Of course', 'No'],
+      correct: 0,
+      yes: 'That is what caches are for.',
+      no: 'Same query, warm cache - same results.'
+    }
+  ],
+
+  turn: {
+    lead: 'Last thing before you go.',
+    setup: 'One book. Two free copies. Reserved by member A yesterday.',
+    qa: 'Search shows it as',
+    qaOptions: ['Available', 'Unavailable'],
+    qaCorrect: 1,
+    qb: 'The kiosk lists it',
+    qbOptions: ['Yes', 'No'],
+    qbCorrect: 0,
+    cta: 'Check'
+  },
+
+  reveal: {
+    headlines: {
+      one: 'One of those two answers is wrong.',
+      zero: 'Both are wrong - in opposite directions.',
+      two: 'Both right. Most reviewers miss one.'
+    },
+    branch: {
+      stale: 'Search hides it now. The third diff narrowed one screen. Only that one.',
+      over: 'The kiosk still lists it. The new filter went into search. Nowhere else.',
+      both: 'The old rule went to search. The new rule went to the kiosk. Each to the wrong place.',
+      strong: 'You caught the split between the screens. Most reviewers carry one rule to both. You did not.'
+    },
+    codePair: {
+      title: 'The whole story, two lines of it:',
+      a: { file: 'search.js', l1: 'available: isAvailable(b)', l2pre: '     ', l2hot: '&& !b.reservedBy', l2post: '' },
+      b: { file: 'kiosk.js', l1: 'books', l2pre: '  .filter(', l2hot: 'isAvailable', l2post: ')' }
+    },
+    para1: 'All five diffs were correct. Your review was fine. But in the third diff, "available" quietly became two different questions - and the two screens now answer different ones.',
+    expiry: {
+      kept: 'Your very first answer - "the screens can never disagree" - was true when you gave it. It expired two diffs later. Nobody prints expiry dates on approvals.',
+      doubted: 'Back at the first diff you suspected the screens could still disagree. Right then, that was wrong - one helper, one truth. Two diffs later, the system quietly proved you right.'
+    },
+    cta: 'Three questions to walk away with'
+  },
+
+  takeaway: {
+    title: 'Three questions to walk away with',
+    questions: [
+      'Where did this rule earn its trust?',
+      'Where am I taking it now?',
+      'What is the cheapest check that would tell me the border is real?'
+    ],
+    ciLine: 'CI was green all five times, honestly. The tests were checking copy counts. Nobody asked them about the kiosk.',
+    aiLine: 'No AI in this demo - the mechanism is human, and older than AI. AI only raises how often you get to repeat it.'
+  },
+
+  encore: {
+    toggle: 'One more? It is sneakier. (30 seconds)',
+    q: 'She reserved it a second ago, then runs the same search again. The badge?',
+    options: ['Still available', 'Now unavailable'],
+    correct: 0,
+    right: 'Right - and if you went back to re-read the cache diff, that reflex is the method.',
+    wrong: 'Still available. The cache clears on checkout, return and addBook. reserve() never told it.',
+    tail: 'This one lives between two diffs. It is in neither.'
+  },
+
+  share: {
+    line: (l, p) => l + '/5 on the diffs. ' + p + '/2 on the system. "Available" stopped being one word. https://rw.krupnyak.com/articles/experimental-recursewright-the-cube-that-doesnt-wait-for-a-command/',
+    cta: 'Copy your result'
+  }
+};
+
+/* ============================================================
+   ENGINE - thin state machine + renderers. No content here.
+   Nav chevrons from the author mark; dashed copper timeline;
+   prompt-chevron options; two-page reveal; looped intro typing.
+   ============================================================ */
+const state = {
+  screen: 'intro',      // intro | tour | delta | turn | reveal | takeaway
+  deltaIdx: 0,
+  answers: [null, null, null, null, null],
+  turnA: null,
+  turnB: null,
+  encoreOpen: false,
+  encorePicked: null
+};
+
+const app = document.getElementById('app');
+
+/* Author mark (Michael Krupnyak, GitHub profile logo). The right chevron doubles as a terminal prompt. */
+function logoSvg(size) {
+  return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 100 100" role="img" aria-label="Michael Krupnyak">' +
+    '<defs><clipPath id="lg"><circle cx="50" cy="50" r="48"/></clipPath></defs>' +
+    '<g clip-path="url(#lg)">' +
+    '<rect width="100" height="100" fill="#1E293B"/>' +
+    '<polygon points="58,0 100,0 100,100 42,100" fill="#2A3A54"/>' +
+    '<path d="M40 26 L18 50 L40 74" stroke="#B87333" stroke-width="13" fill="none"/>' +
+    '<path d="M60 26 L82 50 L60 74" stroke="#B87333" stroke-width="13" fill="none"/>' +
+    '<circle cx="50" cy="50" r="12" fill="#B87333"/>' +
+    '<rect x="30" y="45" width="40" height="10" fill="#B87333"/>' +
+    '</g></svg>';
+}
+
+/* A single chevron in the mark's geometry: nav arrows and answer prompts reuse it. */
+function chev(dir, size) {
+  const d = dir === 'l' ? 'M28 8 L10 30 L28 52' : 'M12 8 L30 30 L12 52';
+  return '<svg width="' + size + '" height="' + Math.round(size * 1.5) + '" viewBox="0 0 40 60" fill="none" aria-hidden="true">' +
+    '<path d="' + d + '" stroke="#B87333" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+}
+
+const pchev = '<span class="pchev absolute left-3 top-1/2 -translate-y-1/2">' + chev('r', 9) + '</span>';
+
+const ICON_COPY = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+const ICON_CHECK = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6FBF73" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>';
+
+/* Looped, unhurried intro typing: type -> hold -> erase -> retype. */
+let typeTimer = null;
+function typeLine(elId, text, speed, loop) {
+  clearTimeout(typeTimer);
+  if (!document.getElementById(elId)) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.getElementById(elId).textContent = text; return;
+  }
+  let i = 0, phase = 'type';
+  const tick = () => {
+    const node = document.getElementById(elId);
+    if (!node) return; // screen changed
+    if (phase === 'type') {
+      node.textContent = text.slice(0, ++i);
+      if (i >= text.length) {
+        if (!loop) return; // one-shot line keeps its caret blinking
+        phase = 'hold'; typeTimer = setTimeout(tick, 4200); return;
+      }
+      typeTimer = setTimeout(tick, speed);
+    } else if (phase === 'hold') {
+      phase = 'erase'; typeTimer = setTimeout(tick, 0);
+    } else {
+      node.textContent = text.slice(0, --i);
+      if (i <= 0) { phase = 'type'; typeTimer = setTimeout(tick, 800); return; }
+      typeTimer = setTimeout(tick, 24);
+    }
+  };
+  typeTimer = setTimeout(tick, 450);
+}
+
+function localCorrect() {
+  return state.answers.filter((a, i) => a === SCENARIO.deltas[i].correct).length;
+}
+
+/* ---------- navigation ---------- */
+
+function canPrev() { return state.screen !== 'intro'; }
+function canNext() {
+  if (state.screen === 'tour') return true;
+  if (state.screen === 'delta') return state.answers[state.deltaIdx] !== null;
+  if (state.screen === 'turn') return state.turnA !== null && state.turnB !== null;
+  return false;
+}
+
+window.navPrev = () => {
+  if (!canPrev()) return;
+  if (state.screen === 'tour') go('intro');
+  else if (state.screen === 'delta') {
+    if (state.deltaIdx > 0) { state.deltaIdx--; go('delta'); } else go('tour');
+  }
+  else if (state.screen === 'turn') { state.deltaIdx = 4; go('delta'); }
+  else if (state.screen === 'reveal') go('turn');
+  else if (state.screen === 'takeaway') go('reveal');
+};
+
+window.navNext = () => {
+  if (!canNext()) return;
+  if (state.screen === 'tour') go('delta');
+  else if (state.screen === 'delta') {
+    if (state.deltaIdx < 4) { state.deltaIdx++; go('delta'); } else go('turn');
+  }
+  else if (state.screen === 'turn') go('reveal');
+};
+
+/* Dashed copper quasi-timeline: 5 diff ticks + the turn. The reveal lives off the map. */
+function tlPos() {
+  if (state.screen === 'delta') return state.deltaIdx;
+  if (state.screen === 'turn') return 5;
+  return -1;
+}
+
+function timeline() {
+  const pos = tlPos();
+  const pct = pos < 0 ? 0 : (pos / 5) * 100;
+  let ticks = '';
+  for (let i = 0; i < 6; i++) {
+    const left = (i / 5) * 100;
+    let cls;
+    if (i === pos) cls = 'w-2.5 h-2.5 bg-copper-300 shadow-[0_0_10px_rgba(216,147,79,0.7)]';
+    else if (pos > -1 && i < pos) cls = 'w-1.5 h-1.5 bg-copper-500';
+    else cls = 'w-1.5 h-1.5 bg-navy-750 border border-white/10';
+    ticks += '<span class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full ' + cls + '" style="left:' + left + '%"></span>';
+  }
+  return '<div class="relative h-8 flex-1 mx-1">' +
+    '<div class="absolute top-1/2 -translate-y-1/2 left-0 right-0 h-px" style="background-image:repeating-linear-gradient(90deg,rgba(42,58,84,0.55) 0 5px,transparent 5px 11px)"></div>' +
+    '<div class="absolute top-1/2 -translate-y-1/2 left-0 h-px bg-gradient-to-r from-copper-500/80 to-copper-300/80" style="width:' + pct + '%"></div>' +
+    ticks + '</div>';
+}
+
+function navRow() {
+  const prev = canPrev(), next = canNext();
+  return '<div class="flex items-center gap-2 mb-8">' +
+    '<button onclick="navPrev()" ' + (prev ? '' : 'disabled') +
+    ' class="nav-ch l rip r1 shrink-0 px-2 py-1.5" aria-label="Back">' + chev('l', 13) + '</button>' +
+    timeline() +
+    '<button onclick="navNext()" ' + (next ? '' : 'disabled') +
+    ' class="nav-ch r rip r2 shrink-0 px-2 py-1.5" aria-label="Forward">' + chev('r', 13) + '</button>' +
+    '</div>';
+}
+
+/* Reveal pages carry no timeline - only a quiet way back. */
+function backRow() {
+  return '<div class="mb-6 -ml-2"><button onclick="navPrev()" class="nav-ch l rip r1 px-2 py-1.5" aria-label="Back">' + chev('l', 13) + '</button></div>';
+}
+
+/* ---------- shared blocks ---------- */
+
+/* Sunken (pressed-in) surface for all code: inset shadow + hairline. */
+const SUNKEN = 'sunken';
+
+function codeBlock(name, code) {
+  return '<div class="mb-3">' +
+    '<div class="text-xs font-mono text-slate-400 mb-1">' + name + '</div>' +
+    '<pre class="' + SUNKEN + ' p-3 overflow-x-auto text-[13px] leading-relaxed font-mono text-slate-300">' +
+    code.replace(/</g, '&lt;') + '</pre></div>';
+}
+
+function diffBlock(diff) {
+  const rows = diff.map(line => {
+    if (line.f) return '<div class="font-mono text-xs text-slate-400 pt-2 pb-1">' + line.f + '</div>';
+    if (line.a) return '<div class="font-mono text-[13px] leading-relaxed px-2 rounded bg-emerald-500/10 text-emerald-300 whitespace-pre">+ ' + line.a.replace(/</g, '&lt;') + '</div>';
+    if (line.d) return '<div class="font-mono text-[13px] leading-relaxed px-2 rounded bg-rose-500/10 text-rose-300 whitespace-pre">- ' + line.d.replace(/</g, '&lt;') + '</div>';
+    return '<div class="font-mono text-[13px] leading-relaxed px-2 text-slate-400 whitespace-pre">  ' + line.c.replace(/</g, '&lt;') + '</div>';
+  }).join('');
+  return '<div class="' + SUNKEN + ' p-3 overflow-x-auto">' + rows + '</div>';
+}
+
+function ciChip() {
+  return '<span class="inline-flex items-center gap-1.5 text-xs text-emerald-300 border border-emerald-500/30 rounded-full px-2.5 py-0.5">' +
+    '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>CI: green</span>';
+}
+
+function button(label, action, extra) {
+  return '<button onclick="' + action + '" class="rip r2 ' + (extra || '') +
+    ' bg-copper-500 hover:bg-copper-300 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-8px_#B87333] text-white font-semibold rounded-[10px] px-[22px] py-3 transition-all">' +
+    label + '</button>';
+}
+
+/* Sequentially surfacing sentences: each fades in on its own delay. */
+function fadeSeq(text) {
+  const parts = text.split('. ').map((p, i, arr) => p.endsWith('.') || i === arr.length - 1 ? p : p + '.');
+  return parts.map((p, i) =>
+    '<span class="fseq" style="animation-delay:' + (0.25 + i * 0.85).toFixed(2) + 's">' + p + ' </span>').join('');
+}
+
+/* ---------- screens ---------- */
+
+function renderIntro() {
+  const s = SCENARIO.intro;
+  app.innerHTML =
+    '<div class="pt-20 text-center">' +
+    '<h1 class="font-serif text-5xl font-semibold tracking-[-0.015em] text-ink/90 leading-[1.13] mb-5">' + s.title + '</h1>' +
+    '<p class="text-inkdim mb-10">' + s.sub + '</p>' +
+    '<div class="mb-12">' + button(s.cta, 'go(\'tour\')') + '</div>' +
+    '<div class="flex items-center justify-center gap-2">' + logoSvg(22) +
+    '<span class="font-mono text-[12px] tracking-[0.04em] text-inkdim whitespace-nowrap"><span id="typedNotes"></span><span class="caret align-text-bottom"></span></span></div>' +
+    '<p class="text-xs text-slate-600 mt-16">&copy; 2026 Michael Krupnyak &middot; <a href="https://dev.to/coderivet" class="hover:text-copper-300">coderivet</a></p>' +
+    '</div>';
+  typeLine('typedNotes', s.notes[0], 95, true);
+}
+
+function renderTour() {
+  const s = SCENARIO.tour;
+  app.innerHTML = navRow() +
+    '<p class="text-slate-300 mb-5">' + s.lead + '</p>' +
+    s.files.map(f => codeBlock(f.name, f.code)).join('') +
+    '<p class="text-slate-300 my-5">' + s.outro + '</p>' +
+    '<div class="text-center pb-8">' + button(s.cta, 'go(\'delta\')') + '</div>';
+}
+
+function optionBtn(label, action, selected, i) {
+  return '<button onclick="' + action + '" class="opt ghost-fx rip r' + ((i % 3) + 1) + ' relative w-full text-left border rounded-lg pl-9 pr-4 py-3 mb-2 transition-colors font-mono text-[15px] ' +
+    (selected ? 'sel border-copper-400 bg-copper-500/10 text-ink' : 'border-white/10 hover:border-copper-400/60 text-slate-200') +
+    '">' + pchev + label.replace(/</g, '&lt;') + '</button>';
+}
+
+function renderDelta() {
+  const d = SCENARIO.deltas[state.deltaIdx];
+  const picked = state.answers[state.deltaIdx];
+
+  let answerArea;
+  if (picked === null) {
+    answerArea = d.options.map((o, i) => optionBtn(o, 'pickDelta(' + i + ')', false, i)).join('');
+  } else {
+    const ok = picked === d.correct;
+    answerArea =
+      '<div class="border-l-2 border-copper-400 pl-4 py-2 mb-5">' +
+      '<div class="font-mono text-sm text-inkdim mb-1.5">you: ' + d.options[picked].replace(/</g, '&lt;') + '</div>' +
+      '<div class="font-mono text-[15px] text-ink">' + (ok ? d.yes : d.no) + '</div></div>' +
+      '<div class="text-right">' + button(state.deltaIdx < 4 ? 'Next' : 'Almost done', 'navNext()') + '</div>';
+  }
+
+  app.innerHTML = navRow() +
+    '<div class="flex items-center justify-between mb-3">' +
+    '<span class="text-xs uppercase tracking-widest text-slate-400">Diff ' + d.id + ' of 5</span>' + ciChip() +
+    '</div>' +
+    '<div class="bg-navy-800 rounded-xl p-4 mb-5">' +
+    '<p class="text-sm text-slate-300 italic mb-3">&ldquo;' + d.ticket + '&rdquo;</p>' +
+    diffBlock(d.diff) +
+    '</div>' +
+    '<p class="font-mono text-lg leading-snug text-ink mb-4">' + d.q + '</p>' + answerArea;
+}
+
+function turnRow(label, options, groupKey, pickedIdx) {
+  const btns = options.map((o, i) =>
+    '<button onclick="pickTurn(\'' + groupKey + '\',' + i + ')" class="opt turn-opt ghost-fx rip r' + ((i % 3) + 1) + ' relative flex-1 text-left border rounded-lg pl-9 pr-3 py-2.5 font-mono text-[15px] transition-colors ' +
+    (pickedIdx === i ? 'sel border-copper-400 bg-copper-500/10 text-ink' : 'border-white/10 hover:border-copper-400/60 text-slate-200') +
+    '">' + pchev + o + '</button>').join('');
+  return '<div class="mb-4"><div class="font-mono text-base text-slate-300 mb-2">' + label + '</div>' +
+    '<div class="flex gap-2">' + btns + '</div></div>';
+}
+
+function renderTurn() {
+  const t = SCENARIO.turn;
+  const ready = state.turnA !== null && state.turnB !== null;
+  app.innerHTML = navRow() +
+    '<p class="text-xs uppercase tracking-widest text-slate-400 mb-6">' + t.lead + '</p>' +
+    '<div class="bg-navy-800 rounded-xl p-4 mb-6 text-ink text-lg">' + t.setup + '</div>' +
+    turnRow(t.qa, t.qaOptions, 'a', state.turnA) +
+    turnRow(t.qb, t.qbOptions, 'b', state.turnB) +
+    '<div class="text-center mt-6">' +
+    '<button ' + (ready ? 'onclick="go(\'reveal\')"' : 'disabled') +
+    ' class="rip r2 ' + (ready ? 'bg-copper-500 hover:bg-copper-300 hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-8px_#B87333] text-white' : 'bg-navy-750 text-slate-500 cursor-not-allowed') +
+    ' font-semibold rounded-[10px] px-8 py-3 transition-all">' + t.cta + '</button></div>';
+}
+
+/* The exhibit: two files, two lines each, the divergence in copper. */
+function codePair() {
+  const c = SCENARIO.reveal.codePair;
+  const box = f =>
+    '<div class="' + SUNKEN + ' p-4">' +
+    '<div class="font-mono text-xs text-slate-400 mb-2">' + f.file + '</div>' +
+    '<div class="font-mono text-[14px] leading-relaxed text-slate-300 whitespace-pre">' + f.l1 + '\n' +
+    f.l2pre + '<span class="text-copper-300 font-semibold">' + f.l2hot + '</span>' + f.l2post + '</div></div>';
+  return '<div class="my-6">' +
+    '<p class="text-sm text-slate-400 mb-2">' + c.title + '</p>' +
+    '<div class="grid sm:grid-cols-2 gap-3">' + box(c.a) + box(c.b) + '</div></div>';
+}
+
+function renderReveal() {
+  const r = SCENARIO.reveal;
+  const t = SCENARIO.turn;
+  const aOk = state.turnA === t.qaCorrect;
+  const bOk = state.turnB === t.qbCorrect;
+  const n = (aOk ? 1 : 0) + (bOk ? 1 : 0);
+  const local = localCorrect();
+
+  const headline = n === 2 ? r.headlines.two : n === 0 ? r.headlines.zero : r.headlines.one;
+  const branchLine = n === 2 ? r.branch.strong : n === 0 ? r.branch.both : (aOk ? r.branch.over : r.branch.stale);
+
+  app.innerHTML = backRow() +
+    '<div class="text-xs uppercase tracking-widest text-slate-400 mb-4">Diffs ' + local + '/5 &middot; The system ' + n + '/2</div>' +
+    '<h2 class="font-serif text-3xl font-semibold tracking-[-0.015em] text-ink mb-4">' + headline + '</h2>' +
+    '<p class="text-lg text-slate-200 leading-relaxed mb-2">' + fadeSeq(branchLine) + '</p>' +
+    codePair() +
+    '<p class="text-[15px] text-slate-300 leading-relaxed mb-4">' + r.para1 + '</p>' +
+    '<p class="text-[15px] text-slate-300 leading-relaxed mb-4">' + (state.answers[0] === SCENARIO.deltas[0].correct ? r.expiry.kept : r.expiry.doubted) + '</p>' +
+    '<div class="text-center mt-10">' + button(r.cta, 'go(\'takeaway\')') + '</div>';
+}
+
+function encoreBlock() {
+  const e = SCENARIO.encore;
+  if (!state.encoreOpen) {
+    return '<div class="text-center mb-8">' +
+      '<button onclick="openEncore()" class="ghost-fx rip r3 border border-white/15 hover:border-copper-400/60 text-slate-300 rounded-[10px] px-5 py-2.5 transition-colors text-sm">' +
+      e.toggle + '</button></div>';
+  }
+  const picked = state.encorePicked;
+  let inner;
+  if (picked === null) {
+    inner = '<div class="flex flex-col sm:flex-row gap-2">' +
+      e.options.map((o, i) =>
+        '<button onclick="pickEncore(' + i + ')" class="opt encore-opt ghost-fx rip r' + ((i % 3) + 1) + ' relative flex-1 text-left border border-white/10 hover:border-copper-400/60 rounded-lg pl-9 pr-3 py-2.5 font-mono text-[15px] text-slate-200 transition-colors">' +
+        pchev + o + '</button>').join('') + '</div>';
+  } else {
+    inner = '<div class="border-l-2 border-copper-400 pl-4 py-1.5">' +
+      '<div class="font-mono text-sm text-inkdim mb-1">you: ' + e.options[picked] + '</div>' +
+      '<p class="text-[15px] text-slate-300">' + (picked === e.correct ? e.right : e.wrong) +
+      ' <span class="text-copper-300">' + e.tail + '</span></p></div>';
+  }
+  return '<div class="bg-navy-800 rounded-xl p-4 mb-8">' +
+    '<p class="text-ink mb-3">' + e.q + '</p>' + inner + '</div>';
+}
+
+function renderTakeaway() {
+  const tw = SCENARIO.takeaway;
+  const t = SCENARIO.turn;
+  const n = (state.turnA === t.qaCorrect ? 1 : 0) + (state.turnB === t.qbCorrect ? 1 : 0);
+  const local = localCorrect();
+
+  const questions = tw.questions.map((q, i) =>
+    '<div class="flex gap-3 py-2">' +
+    '<span class="font-mono text-copper-300 text-sm pt-0.5">0' + (i + 1) + '</span>' +
+    '<p class="text-slate-200">' + q + '</p></div>').join('');
+
+  app.innerHTML = backRow() +
+    '<h2 class="font-serif text-3xl font-semibold tracking-[-0.015em] text-ink mb-5">' + tw.title + '</h2>' +
+    '<div class="bg-navy-750 border-l-2 border-copper-400 rounded-r-lg px-5 py-3 mb-8">' + questions + '</div>' +
+    '<p class="text-sm text-slate-400 italic mb-8">' + tw.ciLine + '</p>' +
+    '<div class="w-10 h-px bg-copper-400 mx-auto mt-10 mb-6"></div>' +
+    '<div class="flex items-start justify-center gap-2.5 max-w-md mx-auto mb-10">' + logoSvg(22) +
+    '<span class="font-mono text-[12px] leading-relaxed tracking-[0.04em] text-slate-300 text-left"><span id="typedAi"></span><span class="caret align-text-bottom"></span></span></div>' +
+    encoreBlock() +
+    '<div class="bg-navy-800 rounded-xl p-5">' +
+    '<div class="text-xs uppercase tracking-widest text-copper-300 mb-3">Your result</div>' +
+    '<div class="sunken px-4 py-3 flex items-start gap-3">' +
+    '<span class="font-mono text-sm text-slate-300 flex-1 overflow-x-auto">' + SCENARIO.share.line(local, n).replace(/</g, '&lt;') + '</span>' +
+    '<button onclick="copyShare(this)" class="tip rip r2 shrink-0 text-slate-400 hover:text-copper-300 transition-colors p-1 -m-1" data-tip="Copy your result" aria-label="Copy your result">' + ICON_COPY + '</button>' +
+    '</div>' +
+    (SCENARIO.meta.articleUrl ? '<p class="text-sm mt-4"><a href="' + SCENARIO.meta.articleUrl + '" class="text-copper-300 underline decoration-dotted decoration-copper-500 underline-offset-4">' + SCENARIO.meta.articleLinkText + '</a></p>' : '') +
+    '</div>' +
+    '<div class="text-center mt-7"><button onclick="restart()" class="rip r1 text-slate-300 hover:text-copper-300 underline decoration-dotted decoration-copper-500/70 underline-offset-4 transition-colors">Run it again</button></div>' +
+    '<p class="text-xs text-slate-600 mt-8 text-center">Synthetic system, analogous by mechanism &middot; Your answers stay on this page.</p>' +
+    '<p class="text-xs text-slate-600 mt-1.5 text-center">&copy; 2026 Michael Krupnyak &middot; <a href="https://dev.to/coderivet" class="hover:text-copper-300">coderivet</a></p>';
+  typeLine('typedAi', tw.aiLine, 42, false);
+}
+
+/* ---------- actions ---------- */
+
+window.go = screen => { clearTimeout(typeTimer); state.screen = screen; pageAnim = true; render(); window.scrollTo(0, 0); };
+
+window.pickDelta = i => {
+  if (state.answers[state.deltaIdx] !== null) return;
+  state.answers[state.deltaIdx] = i;
+  render();
+};
+
+window.pickTurn = (group, i) => {
+  if (group === 'a') state.turnA = i; else state.turnB = i;
+  render();
+};
+
+window.openEncore = () => { state.encoreOpen = true; render(); };
+window.pickEncore = i => { if (state.encorePicked === null) { state.encorePicked = i; render(); } };
+
+window.copyShare = btn => {
+  const t = SCENARIO.turn;
+  const n = (state.turnA === t.qaCorrect ? 1 : 0) + (state.turnB === t.qbCorrect ? 1 : 0);
+  const text = SCENARIO.share.line(localCorrect(), n);
+  const ok = () => {
+    btn.innerHTML = ICON_CHECK; btn.dataset.tip = 'Copied!';
+    setTimeout(() => { btn.innerHTML = ICON_COPY; btn.dataset.tip = 'Copy your result'; }, 1600);
+  };
+  /* Clipboard API needs a permissive context (often absent in iframes / file://).
+     Fall back to the legacy textarea trick so feedback never silently dies. */
+  const legacy = () => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    let done = false;
+    try { done = document.execCommand('copy'); } catch (e) { /* ignore */ }
+    ta.remove();
+    return done;
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(ok).catch(() => { if (legacy()) ok(); });
+  } else if (legacy()) ok();
+};
+
+window.restart = () => {
+  Object.assign(state, { screen: 'intro', deltaIdx: 0, answers: [null, null, null, null, null],
+    turnA: null, turnB: null, encoreOpen: false, encorePicked: null });
+  render(); window.scrollTo(0, 0);
+};
+
+/* Water ripples: delegated, so re-rendered screens keep working. */
+const water = document.getElementById('water');
+let ripTimer = null, ripEl = null, ripFlip = 0;
+function spawnRipple(x, y, tilt) {
+  x = Math.max(14, Math.min(window.innerWidth - 14, x));
+  const rot = document.createElement('div');
+  rot.className = 'wrot';
+  rot.style.left = x + 'px';
+  rot.style.top = y + 'px';
+  rot.style.transform = 'rotate(' + (tilt || 0) + 'deg)';
+  rot.innerHTML = '<div class="wripple"></div>';
+  water.appendChild(rot);
+  setTimeout(() => rot.remove(), 1950);
+}
+function stopRipples() { clearInterval(ripTimer); ripTimer = null; ripEl = null; }
+document.addEventListener('mouseover', e => {
+  const el = e.target.closest ? e.target.closest('.rip') : null;
+  if (!el || el === ripEl || el.disabled) return;
+  stopRipples();
+  ripEl = el;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const burst = () => {
+    if (!ripEl) return;
+    const r = ripEl.getBoundingClientRect();
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+    const jx = (Math.random() - 0.5) * 34, jy = (Math.random() - 0.5) * 26;
+    const jr = (Math.random() - 0.5) * 24;
+    if (ripEl.classList.contains('r3')) {
+      spawnRipple(r.left - 70 + jx, cy + 22 + jy, -15 + jr);
+      spawnRipple(r.right + 70 - jx, cy - 30 - jy, 15 + jr);
+    } else {
+      const base = ripEl.classList.contains('r2') ? 1 : 0;
+      const dir = ((ripFlip++ + base) % 2 === 0) ? -1 : 1;
+      spawnRipple(cx + dir * (r.width / 2 + 84) + jx, cy + (dir > 0 ? -32 : 26) + jy, dir * 15 + jr);
+    }
+  };
+  burst();
+  ripTimer = setInterval(burst, 950);
+});
+document.addEventListener('mouseout', e => {
+  if (ripEl && (!e.relatedTarget || !ripEl.contains(e.relatedTarget)) && e.target.closest && e.target.closest('.rip') === ripEl) stopRipples();
+});
+
+/* ============================================================
+   HOST ADAPTER - the one addition to the original engine. It does
+   nothing when this page is opened on its own. In a frame it reports
+   the scene's height, and works in either kind of host: one that
+   sizes the frame to that height, and one with a fixed, shorter frame.
+   ============================================================ */
+if (window.parent !== window) {
+  const post = message => window.parent.postMessage(message, '*');
+
+  /* The scene's height, never the document's: body is min-h-screen, which in
+     a frame is the frame's own height and could only ever grow. */
+  const reportHeight = () => post({ type: 'rwa:height', height: app.offsetHeight });
+  window.addEventListener('load', reportHeight);
+
+  /* A frame that holds the scene has nothing of its own to scroll: no scrollbar
+     when the entrance animation briefly overflows it. A frame that stays shorter
+     than the scene, once a host has had time to answer, keeps native scrolling. */
+  const root = document.documentElement;
+  root.style.overflow = 'hidden';
+  let settling;
+  const fit = () => {
+    clearTimeout(settling);
+    if (innerHeight >= app.offsetHeight) root.style.overflow = 'hidden';
+    else settling = setTimeout(() => { if (innerHeight < app.offsetHeight) root.style.overflow = ''; }, 400);
+  };
+  new ResizeObserver(() => { reportHeight(); fit(); }).observe(app);
+  window.addEventListener('resize', fit);
+
+  /* go() and restart() return to the top of the scene: in the frame's own
+     scroll, and by asking a host that has sized the frame to do the same. */
+  const scrollFrameTo = window.scrollTo.bind(window);
+  window.scrollTo = (...position) => { scrollFrameTo(...position); post({ type: 'rwa:top' }); };
+
+  /* In a sandbox a link can only navigate the frame itself, into pages that may
+     refuse to be framed. The host page carries the article; here both the article
+     block and the footer's link stand down. */
+  SCENARIO.meta.articleUrl = null;
+  new MutationObserver(() => app.querySelectorAll('a[href]').forEach(a => a.removeAttribute('href')))
+    .observe(app, { childList: true, subtree: true });
+}
+
+let pageAnim = true; // first paint animates too
+function render() {
+  ({ intro: renderIntro, tour: renderTour, delta: renderDelta,
+     turn: renderTurn, reveal: renderReveal, takeaway: renderTakeaway })[state.screen]();
+  if (pageAnim) {
+    pageAnim = false;
+    app.classList.remove('page-in');
+    void app.offsetWidth; // restart the entrance animation
+    app.classList.add('page-in');
+  }
+}
+
+render();
+</script>
+</body>
+</html>
